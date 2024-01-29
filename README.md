@@ -1,66 +1,40 @@
-## Foundry
+# Decentralised Banking System
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+## Overview
 
-Foundry consists of:
+This smart contract implements a decentralized banking system on the Ethereum blockchain. It allows users to create accounts, deposit and withdraw funds, create savings accounts, and automatically add interest to savings on a daily basis.Also borrow loans. The contract is written in Solidity and is intended for deployment on the Ethereum blockchain.It uses 
+chainlink Automation to calculate the interest on daily basis.
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## Features
 
-## Documentation
+- **Account Creation:** Users can create bank accounts by providing their name, email, and making an initial deposit.
+- **Fund Operations:** Users can deposit and withdraw funds from their accounts, as well as transfer funds to other accounts.
+- **Savings Accounts:** Users can create savings accounts, deposit into them, and withdraw from them.
+- **Automatic Interest:** The contract automatically adds 10% interest to all savings accounts every day.
+- **Owner Privileges:** Certain functions can only be executed by the contract owner, providing control over critical 
+- **Loans:** Borrow loans and pay back
+--operations.
 
-https://book.getfoundry.sh/
+# Usage
 
-## Usage
+- Creating an Account:
+        Call the createAccount function, providing a name, email, and the minimum required deposit.
 
-### Build
+- Deposit and Withdraw:
+        Use depositIntoMyAccount to deposit funds into your account.
+        Use withdraw to withdraw funds from your account.
 
-```shell
-$ forge build
-```
+- Savings Account:
+        Create a savings account using createSavingsAccount.
+        Deposit into the savings account using depositIntoSavingsAccount.
+        Withdraw from the savings account using withdrawSavings.
 
-### Test
+- Automatic Interest:
+        The contract owner can call addInterestToAllSavingsAutomatically to add 10% interest to all savings accounts automatically. This uses chainlink automation to achieve this
 
-```shell
-$ forge test
-```
+# Owner Functions
 
-### Format
+- Certain functions can only be executed by the contract owner:
 
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+    storeEther: Store additional funds in the bank.
+    addInterestToAllSavingsAutomatically: Add 10% interest to all savings accounts automatically.
