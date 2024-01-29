@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-/* 
+/** 
  * @title Decentralised Banking system
  * @author Owusu Nelson Osei Tutu 
  * @notice A decentralised banking system that includes creating accounts, depositing funds ,transfering funds
@@ -26,9 +26,9 @@ contract DecentralisedBank is AutomationCompatibleInterface{
     address [] public savingsCreated;
 
     //track user accounts
-    mapping (address => Account) public accounts;
+    mapping (address => Account) private accounts;
     //track savings account
-    mapping (address => SavingsAccount) public savings;
+    mapping (address => SavingsAccount) private savings;
 
     //account format
     struct Account{
@@ -74,7 +74,7 @@ contract DecentralisedBank is AutomationCompatibleInterface{
         _;
     }
 
-    /*
+    /**
     * @notice This modifier ensures that user has sufficient funds to perform certain functions
     */
     modifier hasSufficientFunds(address payable user,uint256 amount){
@@ -89,7 +89,7 @@ contract DecentralisedBank is AutomationCompatibleInterface{
         total_value = msg.value;
     }
 
-    /*
+    /**
      * @notice This functions stores the initial amount the bank was started with
     */
      
@@ -97,7 +97,7 @@ contract DecentralisedBank is AutomationCompatibleInterface{
         total_value += msg.value;
      }
 
-    /*
+    /**
       @notice this function is for creating user accounts
     */
 
@@ -114,7 +114,7 @@ contract DecentralisedBank is AutomationCompatibleInterface{
         accountsCreated.push(msg.sender);
     }
 
-    /*
+    /**
      * @notice This function allows users to deposit amounts called only within the contract
     */
     function depositAccount(address _userAddress) internal{
@@ -125,7 +125,7 @@ contract DecentralisedBank is AutomationCompatibleInterface{
         savings[_userAddress].balance += msg.value;
     }
 
-    /*
+    /**
     * @notice This function allows users to deposit money into their own accounts
 
     */
@@ -134,19 +134,20 @@ contract DecentralisedBank is AutomationCompatibleInterface{
         depositAccount(msg.sender);
     }
 
-    /*
+    /**
     * @notice This function allows users to deposit into others account if they have sufficient funds
     */
 
     function depositIntoOtherAccount(address _userAddress) 
     hasSufficientFunds(payable (msg.sender),msg.value)
-     onlyAccountOwner public payable {
+     onlyAccountOwner public payable returns (bool success){
         require(_userAddress != msg.sender);
         depositAccount(_userAddress);
         accounts[msg.sender].balance -= msg.value;
+        return true;
     }
 
-    /*
+    /**
     * @notice This function allows users to withdraw money from thier bank account
     */
 
@@ -164,7 +165,7 @@ contract DecentralisedBank is AutomationCompatibleInterface{
 
     
 
-    /*
+    /**
     * @notice This function calculates interest on savings
     */
 
@@ -224,7 +225,7 @@ contract DecentralisedBank is AutomationCompatibleInterface{
     }
 
 
-    /*
+    /**
     * @notice This function is for creating a savings account
     */
 
@@ -237,7 +238,7 @@ contract DecentralisedBank is AutomationCompatibleInterface{
        savingsCreated.push(msg.sender);
     }
 
-    /*
+    /**
     * @notice This function is for depositing into savings account
     */
 
@@ -246,7 +247,7 @@ contract DecentralisedBank is AutomationCompatibleInterface{
         depositSaving(msg.sender);
     }
 
-    /*
+    /**
     * @notice This function is for withdrawing from savings account
     */
 
@@ -263,7 +264,7 @@ contract DecentralisedBank is AutomationCompatibleInterface{
 
     /* Getter functions */
 
-    /*
+    /** 
     * @notice this functions gets the balance in the bank
     */
 
@@ -271,7 +272,7 @@ contract DecentralisedBank is AutomationCompatibleInterface{
        return address(this).balance;
     }
 
-    /*
+    /** 
     * @notice this function gets the balance of an account called by only the account owner
     */
 
@@ -279,7 +280,7 @@ contract DecentralisedBank is AutomationCompatibleInterface{
         return accounts[msg.sender].balance;
     }
 
-    /*
+    /** *
     * @notice this function gets the number of accounts created
     */
 
@@ -287,5 +288,24 @@ contract DecentralisedBank is AutomationCompatibleInterface{
        return accountsCreated.length;
     }
 
+    /**
+     * @notice This function gets the minimun ether
+     */
+    
+    function getMinimumEth() public pure returns (uint256){
+        return MINIMUM_AMOUNT;
+    }
+
+    /**
+     * @notice This functions returns the number of savings account
+     */
+
+    function getAllSavinsgAccounts() public view returns (uint256){
+        return savingsCreated.length;
+    }
+
+    function getSavingsBalance() onlyAccountOwner public view returns (uint256){
+        return savings[msg.sender].balance;
+    }
 
 }
